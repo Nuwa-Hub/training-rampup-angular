@@ -27,7 +27,31 @@
     editor="text"
     title="Person Name"
     [width]="150"
-  ></kendo-grid-column>
+  >
+    <ng-template
+      kendoGridEditTemplate
+      let-column="column"
+      let-formGroup="formGroup"
+      let-isNew="isNew"
+    >
+      <kendo-textbox
+        #input="popupAnchor"
+        popupAnchor
+        [formControl]="formGroup.get('PersonName')"
+      ></kendo-textbox>
+      <kendo-popup
+        [anchor]="input.element"
+        *ngIf="
+          formGroup.get('PersonName').invalid &&
+          !(isNew && formGroup.get('PersonName').untouched)
+        "
+        popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+      >
+        <span class="k-icon k-i-exclamation-circle"></span>
+        person name is required
+      </kendo-popup></ng-template
+    ></kendo-grid-column
+  >
   <kendo-grid-column field="PersonGender" title="Person Gender" [width]="150">
     <ng-template
       kendoGridEditTemplate
@@ -36,9 +60,9 @@
     >
       <kendo-dropdownlist
         [data]="['Male', 'Female']"
-        [defaultItem]="'Select'"
         [valuePrimitive]="true"
         [formControl]="formGroup.get('PersonGender')"
+        [ariaSelected]="true"
       >
       </kendo-dropdownlist>
     </ng-template>
@@ -46,30 +70,88 @@
       {{ dataItem.PersonGender }}
     </ng-template></kendo-grid-column
   >
-  <kendo-grid-column
-    field="PersonAddress"
-    editor="text"
-    title="Person Address"
-  ></kendo-grid-column>
+  <kendo-grid-column field="PersonAddress" editor="text" title="Person Address">
+    <ng-template
+      kendoGridEditTemplate
+      let-column="column"
+      let-formGroup="formGroup"
+      let-isNew="isNew"
+    >
+      <kendo-textbox
+        #input="popupAnchor"
+        popupAnchor
+        [formControl]="formGroup.get('PersonAddress')"
+      ></kendo-textbox>
+      <kendo-popup
+        [anchor]="input.element"
+        *ngIf="
+          formGroup.get('PersonAddress').invalid &&
+          !(isNew && formGroup.get('PersonAddress').untouched)
+        "
+        popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+      >
+        <span class="k-icon k-i-exclamation-circle"></span>
+        person address is required person address is required
+      </kendo-popup></ng-template
+    >
+  </kendo-grid-column>
   <kendo-grid-column
     field="PersonMobileNo"
     title="Person Mobile No"
     editor="text"
     [width]="200"
-  ></kendo-grid-column>
+  >
+    <ng-template
+      kendoGridEditTemplate
+      let-column="column"
+      let-formGroup="formGroup"
+      let-isNew="isNew"
+    >
+      <kendo-textbox
+        #input="popupAnchor"
+        popupAnchor
+        [formControl]="formGroup.get('PersonMobileNo')"
+      ></kendo-textbox>
+      <kendo-popup
+        [anchor]="input.element"
+        *ngIf="
+          formGroup.get('PersonMobileNo').invalid &&
+          !(isNew && formGroup.get('PersonMobileNo').untouched)
+        "
+        popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+      >
+        <span class="k-icon k-i-exclamation-circle"></span>
+        person mobile number required with valid format
+      </kendo-popup></ng-template
+    >
+  </kendo-grid-column>
   <kendo-grid-column field="DateOfBirth" title="Date Of Birth" [width]="200">
     <ng-template
       kendoGridEditTemplate
       let-dataItem="dataItem"
       let-formGroup="formGroup"
-    
+      let-isNew="isNew"
     >
       <kendo-datepicker
+        #input="popupAnchor"
+        popupAnchor
         [formControl]="formGroup.get('DateOfBirth')"
+        [max]="maxDate"
       ></kendo-datepicker>
+      <kendo-popup
+        [anchor]="input.element"
+        *ngIf="
+          formGroup.get('DateOfBirth').invalid &&
+          !(isNew && formGroup.get('DateOfBirth').untouched)
+        "
+        popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+      >
+        <span class="k-icon k-i-exclamation-circle"></span>
+        age should be greater than 18
+      </kendo-popup>
     </ng-template>
     <ng-template kendoGridCellTemplate let-dataItem>
-      {{ dataItem.DateOfBirth | date: 'EE MMM d y' }}
+      {{ dataItem.DateOfBirth | date : "EE MMM d y" }}
     </ng-template>
   </kendo-grid-column>
   <kendo-grid-column field="PersonAge" title="Person Age" [width]="150">

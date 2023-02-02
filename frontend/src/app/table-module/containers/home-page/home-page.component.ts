@@ -48,9 +48,7 @@ export class HomePageComponent {
     skip: 0,
     take: 10,
   };
-
   public view: Observable<GridDataResult> | undefined;
-  personData$: Observable<PersonInterface[]>;
   error$: Observable<string | null>;
   isLoading$: Observable<boolean>;
   public data: PersonInterface[] = [];
@@ -58,7 +56,7 @@ export class HomePageComponent {
   public formGroup: FormGroup | undefined;
   private editService: TableService;
   public categories: Category[] = categories;
-  value: Date | undefined;
+  public maxDate: Date = new Date(2004, 12, 31);
 
   constructor(
     private store: Store<AppStateInterface>,
@@ -66,12 +64,11 @@ export class HomePageComponent {
   ) {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.error$ = this.store.pipe(select(errSelector));
-    this.personData$ = this.store.pipe(select(personDataSelector));
     this.editService = editServiceFactory();
   }
 
   ngOnInit(): void {
-    this.editService.read();
+    this.store.dispatch(personActions.getPersonstart());
     this.view = this.store.pipe(
       select(personDataSelector),
       map((data) => process(data, this.gridState))
@@ -102,7 +99,13 @@ export class HomePageComponent {
     const { dataItem } = args;
     this.closeEditor(args.sender);
     this.formGroup = new FormGroup({
-      PersonName: new FormControl(dataItem.PersonName, Validators.required),
+      PersonName: new FormControl(
+        dataItem.PersonName,
+        Validators.compose([
+          Validators.required,
+          Validators.pattern("^[a-z]{5,15}"),
+        ])
+      ),
       PersonGender: new FormControl(dataItem.PersonGender, Validators.required),
       PersonAddress: new FormControl(
         dataItem.PersonAddress,
@@ -114,7 +117,7 @@ export class HomePageComponent {
       ),
       DateOfBirth: new FormControl(
         new Date(dataItem.DateOfBirth),
-        Validators.required
+        Validators.compose([Validators.required, this.ageValidator])
       ),
     });
 
@@ -142,12 +145,10 @@ export class HomePageComponent {
       person.PersonID = dataItem.PersonID;
     }
     this.editService.save(person, isNew);
-
     sender.closeRow(rowIndex);
   }
   public removeHandler(args: RemoveEvent): void {
-    // remove the current dataItem from the current data source,
-    // `editService` in this example
+    // remove the current dataItem from the current data source, and close the row
     this.editService.remove(args.dataItem.PersonID);
   }
 
@@ -157,13 +158,22 @@ export class HomePageComponent {
   }
 
   public onStateChange(state: State): void {
-    console.log(state);
     this.gridState = state;
-    this.editService.read();
+    this.store.dispatch(personActions.getPersonstart());
+    // this.editService.read();
   }
   protected ageCalculator(birthday: string): number {
     const start = new Date(birthday);
     const end = new Date();
     return durationInYears(start, end);
   }
+  protected ageValidator = (control: FormControl) => {
+    const birthdate = new Date(control.value);
+    const today = new Date();
+    const age = today.getFullYear() - birthdate.getFullYear();
+    if (age < 18) {
+      return { age: "Age must be more than 18" };
+    }
+    return null;
+  };
 }

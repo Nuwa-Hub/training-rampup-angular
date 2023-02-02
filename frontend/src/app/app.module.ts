@@ -11,7 +11,7 @@ import { environment } from "../environments/environment";
 import { LayoutModule } from "@progress/kendo-angular-layout";
 import { IconsModule } from "@progress/kendo-angular-icons";
 import { ButtonsModule } from "@progress/kendo-angular-buttons";
-import { InputsModule } from "@progress/kendo-angular-inputs";
+
 import { LabelModule } from "@progress/kendo-angular-label";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DialogsModule } from "@progress/kendo-angular-dialog";
@@ -19,6 +19,7 @@ import { ClickoutsideDirective } from "./utils/derectives/clickoutside.directive
 import { HttpClientModule } from "@angular/common/http";
 import { DropDownListModule } from "@progress/kendo-angular-dropdowns";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +31,7 @@ import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
     IconsModule,
     ButtonsModule,
     DialogsModule,
-    InputsModule,
+    
     LabelModule,
     LayoutModule,
     AppRoutingModule,

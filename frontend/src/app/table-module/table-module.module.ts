@@ -12,9 +12,12 @@ import { AppStateInterface } from "../types/appState.interface";
 import { DropDownListModule } from "@progress/kendo-angular-dropdowns";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PopupModule } from "@progress/kendo-angular-popup";
+import { PopupAnchorDirective } from "../utils/derectives/popupAnchor.derective/popup-anchor.directive"; 
+import { InputsModule } from "@progress/kendo-angular-inputs";
 
 @NgModule({
-  declarations: [HomePageComponent],
+  declarations: [HomePageComponent, PopupAnchorDirective],
   imports: [
     CommonModule,
     GridModule,
@@ -24,11 +27,13 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     DateInputsModule,
     ReactiveFormsModule,
     FormsModule,
+    PopupModule,
+InputsModule,
   ],
 
   providers: [
     {
-      deps: [HttpClient, Store],
+      deps: [Store],
       provide: TableService,
       useFactory: (store: Store<AppStateInterface>) => () =>
         new TableService(store),

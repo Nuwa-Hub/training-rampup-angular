@@ -24,23 +24,23 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
 
   private data: PersonInterface[] = [];
 
-  public read(): void {
-    if (this.data.length) {
-      return super.next(this.data);
-    }
-    this.store.dispatch(personActions.getPersonstart());
-    this.store
-      .select(personDataSelector)
-      .pipe(
-        tap((data) => {
-          this.data = data;
-        })
-      )
-      .subscribe((data) => {
-        super.next(data);
-      });
+  // public read(): void {
+  //   if (this.data.length) {
+  //     return super.next(this.data);
+  //   }
+  //   this.store.dispatch(personActions.getPersonstart());
+  //   this.store
+  //     .select(personDataSelector)
+  //     .pipe(
+  //       tap((data) => {
+  //         this.data = data;
+  //       })
+  //     )
+  //     .subscribe((data) => {
+  //       super.next(data);
+  //     });
 
-  }
+  // }
 
   public save(personData: PersonInterface, isNew?: boolean): void {
    
