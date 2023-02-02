@@ -30,8 +30,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     {
       deps: [HttpClient, Store],
       provide: TableService,
-      useFactory: (jsonp: HttpClient, store: Store<AppStateInterface>) => () =>
-        new TableService(store, jsonp),
+      useFactory: (store: Store<AppStateInterface>) => () =>
+        new TableService(store),
     },
   ],
 })

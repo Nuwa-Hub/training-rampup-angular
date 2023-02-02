@@ -11,9 +11,6 @@ import {
   personDataSelector,
 } from "./../../store/selectors/personSelector";
 
-const CREATE_ACTION = "create";
-const UPDATE_ACTION = "update";
-const REMOVE_ACTION = "destroy";
 
 @Injectable({
   providedIn: "root",
@@ -21,7 +18,6 @@ const REMOVE_ACTION = "destroy";
 export class TableService extends BehaviorSubject<PersonInterface[]> {
   constructor(
     private store: Store<AppStateInterface>,
-    private http: HttpClient
   ) {
     super([]);
   }
@@ -47,8 +43,7 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
   }
 
   public save(personData: PersonInterface, isNew?: boolean): void {
-    const action = isNew ? CREATE_ACTION : UPDATE_ACTION;
-
+   
     this.reset();
     this.store.dispatch(personActions.addPersonstart({ personData }));
   }
@@ -63,16 +58,12 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
     if (!dataItem) {
       return;
     }
-
     // find orignal data item
     const originalDataItem = this.data.find(
       (item) => item.PersonID === dataItem.PersonID
     );
-
     // revert changes
-
     originalDataItem && Object.assign(originalDataItem, dataItem);
-
     super.next(this.data);
   }
 

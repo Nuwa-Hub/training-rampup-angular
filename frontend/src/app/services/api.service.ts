@@ -34,19 +34,15 @@ export class ApiService {
       )
       .pipe(map((data: any) => data));
   }
-removePersondata(id: number): Observable<PersonInterface> {
+  removePersondata(id: number): Observable<PersonInterface> {
     const headers = new HttpHeaders().set(
       "Content-Type",
       "application/json; charset=utf-8"
     );
     return this.http
-      .delete(
-        `http://localhost:5000/api/students/${id}`,
-        {
-          headers: headers,
-        }
-      )
+      .delete(`http://localhost:5000/api/students/${id}`, {
+        headers: headers,
+      })
       .pipe(map((data: any) => data));
   }
-
 }
