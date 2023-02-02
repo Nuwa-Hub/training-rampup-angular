@@ -10,3 +10,26 @@ export const getPersonFailure = createAction(
   "[Post] Get PersonData failure",
   props<{ error: string }>()
 );
+export const addPersonstart = createAction(
+  "[Post] Add PersonData start",
+  props<{ personData: PersonInterface }>()
+);
+export const addPersonSuccess = createAction( 
+  "[Post] Add PersonData success",
+);
+export const addPersonFailure = createAction(
+  "[Post] Add PersonData failure",
+  props<{ error: string }>()
+);  
+export const deletePersonstart = createAction(
+  "[Post] Delete PersonData start",
+  props<{ PersonID: number }>()
+);
+export const deletePersonSuccess = createAction(
+  "[Post] Delete PersonData success",
+);
+export const deletePersonFailure = createAction(
+  "[Post] Delete PersonData failure",
+  props<{ error: string }>()
+);
+

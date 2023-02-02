@@ -16,3 +16,4 @@ export const errSelector = createSelector(
   selectFeaturePersondata,
   (persondataState) => persondataState.error
 );
+

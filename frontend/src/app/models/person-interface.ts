@@ -20,3 +20,8 @@ export interface User {
   Email: string;
   Role:string;
 }
+
+export interface Category{
+  CategoryID: string;
+  CategoryName: string; 
+}

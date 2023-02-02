@@ -31,8 +31,11 @@ export const createStudentService = async (user: Student): Promise<Student> => {
   try {
     const userRepo = AppDataSource.getRepository(Student);
     const userInsert = await userRepo.save(user);
+
     return userInsert;
+   
   } catch (err) {
+    
     throw new Error("Error in creating user");
   }
 };

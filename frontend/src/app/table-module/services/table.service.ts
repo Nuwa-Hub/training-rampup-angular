@@ -2,6 +2,14 @@ import { Observable, map, BehaviorSubject, tap } from "rxjs";
 import { PersonInterface } from "./../../models/person-interface";
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { AppStateInterface } from "src/app/types/appState.interface";
+import { select, Store } from "@ngrx/store";
+import * as personActions from "../../store/actions/personAction";
+import {
+  errSelector,
+  isLoadingSelector,
+  personDataSelector,
+} from "./../../store/selectors/personSelector";
 
 const CREATE_ACTION = "create";
 const UPDATE_ACTION = "update";
@@ -11,7 +19,10 @@ const REMOVE_ACTION = "destroy";
   providedIn: "root",
 })
 export class TableService extends BehaviorSubject<PersonInterface[]> {
-  constructor(private http: HttpClient) {
+  constructor(
+    private store: Store<AppStateInterface>,
+    private http: HttpClient
+  ) {
     super([]);
   }
 
@@ -21,36 +32,31 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
     if (this.data.length) {
       return super.next(this.data);
     }
-
-    this.fetch()
+    this.store.dispatch(personActions.getPersonstart());
+    this.store
+      .select(personDataSelector)
       .pipe(
-        tap((data: PersonInterface[]) => {
+        tap((data) => {
           this.data = data;
         })
       )
       .subscribe((data) => {
         super.next(data);
       });
+
   }
 
-  public save(data: PersonInterface[], isNew?: boolean): void {
+  public save(personData: PersonInterface, isNew?: boolean): void {
     const action = isNew ? CREATE_ACTION : UPDATE_ACTION;
 
     this.reset();
-
-    this.fetch(action, data).subscribe(
-      () => this.read(),
-      () => this.read()
-    );
+    this.store.dispatch(personActions.addPersonstart({ personData }));
   }
 
-  public remove(data: PersonInterface[]): void {
+  public remove(PersonID: number): void {
     this.reset();
 
-    this.fetch(REMOVE_ACTION, data).subscribe(
-      () => this.read(),
-      () => this.read()
-    );
+    this.store.dispatch(personActions.deletePersonstart({ PersonID }));
   }
 
   public resetItem(dataItem: PersonInterface): void {
@@ -74,28 +80,4 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
     this.data = [];
   }
 
-  private fetch(action = "", data?: PersonInterface[]): Observable<PersonInterface[]> {
-    return this.http
-      .jsonp(
-        `https://demos.telerik.com/kendo-ui/service/Products/${action}?${this.serializeModels(
-          data
-        )}`,
-        "callback"
-      )
-      .pipe(map((res) => <PersonInterface[]>res));
-  }
-
-  private serializeModels(data?: PersonInterface[]): string {
-    return data ? `&models=${JSON.stringify([data])}` : "";
-  }
-
-  fetchPersondata(): Observable<PersonInterface[]> {
-    const headers = new HttpHeaders().set(
-      "Content-Type",
-      "application/json; charset=utf-8"
-    );
-    return this.http
-      .get("http://localhost:5000/api/students", { headers: headers })
-      .pipe(map((data: any) => data));
-  }
 }

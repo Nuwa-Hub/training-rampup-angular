@@ -34,13 +34,13 @@ export const getStudentById = async (req: Request, res: Response) => {
 export const createStudent = async (req: Request, res: Response) => {
   try {
     const user = req.body.data;
-    
+    console.log("createUsers", user);
     const userInsert = await createStudentService(user);
-    const socket = req.app.get("socket");
-    socket.emit(
-      "notification",
-      `New user created successfully Name: ${userInsert?.PersonName}  !`
-    );
+    // const socket = req.app.get("socket");
+    // socket.emit(
+    //   "notification",
+    //   `New user created successfully Name: ${userInsert?.PersonName}  !`
+    // );
     res.status(201).send(userInsert);
   } catch (err) {
     res.status(400).send(err);
@@ -52,14 +52,16 @@ export const updateStudent = async (req: Request, res: Response) => {
     const user = req.body.data;
 
     const userUpdate = await createStudentService(user);
-    const socket = req.app.get("socket");
-    socket.emit(
-      "notification",
-      `User updated successfully Name: ${userUpdate?.PersonName}  !`
-    );
+    // const socket = req.app.get("socket");
+    // socket.emit(
+    //   "notification",
+    //   `User updated successfully Name: ${userUpdate?.PersonName}  !`
+    // );
+    console.log("updateUsers", userUpdate);
     res.status(201).send(userUpdate);
   } catch (err) {
-     res.status(400).send(err);
+    
+    res.status(400).send(err);
   }
 };
 

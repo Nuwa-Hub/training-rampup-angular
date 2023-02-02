@@ -4,7 +4,6 @@ import { isDevMode, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
@@ -18,6 +17,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DialogsModule } from "@progress/kendo-angular-dialog";
 import { ClickoutsideDirective } from "./utils/derectives/clickoutside.directive";
 import { HttpClientModule } from "@angular/common/http";
+import { DropDownListModule } from "@progress/kendo-angular-dropdowns";
+import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,8 +34,9 @@ import { HttpClientModule } from "@angular/common/http";
     LabelModule,
     LayoutModule,
     AppRoutingModule,
-    DateInputsModule,
     TableModule,
+    DropDownListModule,
+    DateInputsModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot(),

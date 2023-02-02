@@ -14,21 +14,8 @@ const studentRouter = Router();
 
 studentRouter.get("/", getAllStudents);
 studentRouter.get("/:id", getStudentById);
-studentRouter.post(
-  "/",
-  verifyJWT,
-  validateData,
-  validata,
-  verifyRoles(["admin"]),
-  createStudent
-);
-studentRouter.put(
-  "/",
-  validateData,
-  validata,
-  verifyRoles(["admin"]),
-  updateStudent
-);
+studentRouter.post("/", createStudent);
+studentRouter.put("/", updateStudent);
 studentRouter.delete("/:id", deleteStudent);
 
 export default studentRouter;

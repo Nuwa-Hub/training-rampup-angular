@@ -17,21 +17,39 @@ import {
   AddEvent,
 } from "@progress/kendo-angular-grid";
 import { State, process } from "@progress/kendo-data-query";
-import { first, map } from "rxjs/operators";
+import { first, map, toArray } from "rxjs/operators";
 import { sampleData } from "../../helpers/sampleProducts";
-import { PersonInterface } from "src/app/models/person-interface";
+import { Category, PersonInterface } from "src/app/models/person-interface";
 import { AppStateInterface } from "src/app/types/appState.interface";
 import { select, Store } from "@ngrx/store";
 import * as personActions from "../../../store/actions/personAction";
 import { TableService } from "../../services/table.service";
+import { durationInYears } from "@progress/kendo-date-math";
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 
+export const categories = [
+  {
+    CategoryID: "Male",
+    CategoryName: "Male",
+  },
+  {
+    CategoryID: "Femail",
+    CategoryName: "Female",
+  },
+];
 @Component({
   selector: "app-home-page",
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
 })
 export class HomePageComponent {
-  public view: PersonInterface[] = [];
+  public gridState: State = {
+    sort: [],
+    skip: 0,
+    take: 10,
+  };
+
+  public view: Observable<GridDataResult> | undefined;
   personData$: Observable<PersonInterface[]>;
   error$: Observable<string | null>;
   isLoading$: Observable<boolean>;
@@ -39,12 +57,8 @@ export class HomePageComponent {
   private editedRowIndex: number | undefined;
   public formGroup: FormGroup | undefined;
   private editService: TableService;
-
-  public gridState: State = {
-    sort: [],
-    skip: 0,
-    take: 5,
-  };
+  public categories: Category[] = categories;
+  value: Date | undefined;
 
   constructor(
     private store: Store<AppStateInterface>,
@@ -57,18 +71,27 @@ export class HomePageComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(personActions.getPersonstart());
-    this.personData$.pipe(first()).subscribe((val) => (this.data = val));
+    this.editService.read();
+    this.view = this.store.pipe(
+      select(personDataSelector),
+      map((data) => process(data, this.gridState))
+    );
+  }
+
+  public category(id: string): Category | undefined {
+    // [formControl]="formGroup.get('CategoryID')"
+    return this.categories.find((x) => x.CategoryID === id);
   }
 
   public addHandler(args: AddEvent): void {
     // define all editable fields validators and default values
+    this.closeEditor(args.sender);
     this.formGroup = new FormGroup({
       PersonName: new FormControl("", Validators.required),
       PersonGender: new FormControl("", Validators.required),
       PersonAddress: new FormControl("", Validators.required),
       PersonMobileNo: new FormControl("", Validators.required),
-      DateOfBirth: new FormControl("", Validators.required),
+      DateOfBirth: new FormControl(new Date(), Validators.required),
     });
     // show the new row editor, with the `FormGroup` build above
     args.sender.addRow(this.formGroup);
@@ -79,11 +102,20 @@ export class HomePageComponent {
     const { dataItem } = args;
     this.closeEditor(args.sender);
     this.formGroup = new FormGroup({
-      PersonName: new FormControl("", Validators.required),
-      PersonGender: new FormControl("", Validators.required),
-      PersonAddress: new FormControl("", Validators.required),
-      PersonMobileNo: new FormControl("", Validators.required),
-      DateOfBirth: new FormControl("", Validators.required),
+      PersonName: new FormControl(dataItem.PersonName, Validators.required),
+      PersonGender: new FormControl(dataItem.PersonGender, Validators.required),
+      PersonAddress: new FormControl(
+        dataItem.PersonAddress,
+        Validators.required
+      ),
+      PersonMobileNo: new FormControl(
+        dataItem.PersonMobileNo,
+        Validators.required
+      ),
+      DateOfBirth: new FormControl(
+        new Date(dataItem.DateOfBirth),
+        Validators.required
+      ),
     });
 
     this.editedRowIndex = args.rowIndex;
@@ -98,27 +130,40 @@ export class HomePageComponent {
     this.editedRowIndex = undefined;
     this.formGroup = undefined;
   }
-  public saveHandler({ sender, rowIndex, formGroup, isNew }: SaveEvent): void {
-    const product: PersonInterface[] = formGroup.value;
-
-    this.editService.save(product, isNew);
+  public saveHandler({
+    sender,
+    rowIndex,
+    formGroup,
+    isNew,
+    dataItem,
+  }: SaveEvent): void {
+    const person: PersonInterface = formGroup.value;
+    if (dataItem.PersonID) {
+      person.PersonID = dataItem.PersonID;
+    }
+    this.editService.save(person, isNew);
 
     sender.closeRow(rowIndex);
   }
-    public removeHandler(args: RemoveEvent): void {
-        // remove the current dataItem from the current data source,
-        // `editService` in this example
-        this.editService.remove(args.dataItem);
-    }
+  public removeHandler(args: RemoveEvent): void {
+    // remove the current dataItem from the current data source,
+    // `editService` in this example
+    this.editService.remove(args.dataItem.PersonID);
+  }
 
   public cancelHandler(args: CancelEvent): void {
-        // close the editor for the given row
-        this.closeEditor(args.sender, args.rowIndex);
-    }
+    // close the editor for the given row
+    this.closeEditor(args.sender, args.rowIndex);
+  }
 
-    public onStateChange(state: State): void {
-        this.gridState = state;
-
-        this.editService.read();
-    }
+  public onStateChange(state: State): void {
+    console.log(state);
+    this.gridState = state;
+    this.editService.read();
+  }
+  protected ageCalculator(birthday: string): number {
+    const start = new Date(birthday);
+    const end = new Date();
+    return durationInYears(start, end);
+  }
 }

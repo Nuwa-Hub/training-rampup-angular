@@ -1,5 +1,5 @@
 <kendo-grid
-  [data]="personData$ | async"
+  [data]="view | async"
   [pageSize]="gridState.take"
   [skip]="gridState.skip"
   [sort]="gridState.sort"
@@ -12,6 +12,7 @@
   (remove)="removeHandler($event)"
   (add)="addHandler($event)"
   [navigable]="true"
+  [height]="650"
 >
   <ng-template kendoGridToolbarTemplate>
     <button kendoGridAddCommand>Add new</button>
@@ -27,25 +28,55 @@
     title="Person Name"
     [width]="150"
   ></kendo-grid-column>
-  <kendo-grid-column
-    field="PersonGender"
-    title="Person Gender"
-    [width]="150"
-  ></kendo-grid-column>
+  <kendo-grid-column field="PersonGender" title="Person Gender" [width]="150">
+    <ng-template
+      kendoGridEditTemplate
+      let-dataItem="dataItem"
+      let-formGroup="formGroup"
+    >
+      <kendo-dropdownlist
+        [data]="['Male', 'Female']"
+        [defaultItem]="'Select'"
+        [valuePrimitive]="true"
+        [formControl]="formGroup.get('PersonGender')"
+      >
+      </kendo-dropdownlist>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.PersonGender }}
+    </ng-template></kendo-grid-column
+  >
   <kendo-grid-column
     field="PersonAddress"
+    editor="text"
     title="Person Address"
   ></kendo-grid-column>
   <kendo-grid-column
     field="PersonMobileNo"
     title="Person Mobile No"
+    editor="text"
     [width]="200"
   ></kendo-grid-column>
-  <kendo-grid-column
-    field="DateOfBirth"
-    title="Date Of Birth"
-    [width]="200"
-  ></kendo-grid-column>
+  <kendo-grid-column field="DateOfBirth" title="Date Of Birth" [width]="200">
+    <ng-template
+      kendoGridEditTemplate
+      let-dataItem="dataItem"
+      let-formGroup="formGroup"
+    
+    >
+      <kendo-datepicker
+        [formControl]="formGroup.get('DateOfBirth')"
+      ></kendo-datepicker>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.DateOfBirth | date: 'EE MMM d y' }}
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="PersonAge" title="Person Age" [width]="150">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ ageCalculator(dataItem.DateOfBirth) }}</ng-template
+    ></kendo-grid-column
+  >
   <kendo-grid-command-column title="command" [width]="220">
     <ng-template kendoGridCellTemplate let-isNew="isNew">
       <button kendoGridEditCommand [primary]="true">Edit</button>
