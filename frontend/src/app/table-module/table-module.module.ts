@@ -13,7 +13,7 @@ import { DropDownListModule } from "@progress/kendo-angular-dropdowns";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PopupModule } from "@progress/kendo-angular-popup";
-import { PopupAnchorDirective } from "../utils/derectives/popupAnchor.derective/popup-anchor.directive"; 
+import { PopupAnchorDirective } from "../utils/derectives/popupAnchor.derective/popup-anchor.directive";
 import { InputsModule } from "@progress/kendo-angular-inputs";
 
 @NgModule({
@@ -28,7 +28,7 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
     ReactiveFormsModule,
     FormsModule,
     PopupModule,
-InputsModule,
+    InputsModule,
   ],
 
   providers: [

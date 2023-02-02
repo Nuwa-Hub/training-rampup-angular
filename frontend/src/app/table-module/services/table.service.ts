@@ -53,7 +53,6 @@ export class TableService extends BehaviorSubject<PersonInterface[]> {
 
     this.store.dispatch(personActions.deletePersonstart({ PersonID }));
   }
-
   public resetItem(dataItem: PersonInterface): void {
     if (!dataItem) {
       return;
