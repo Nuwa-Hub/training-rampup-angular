@@ -1,4 +1,18 @@
-<kendo-grid [data]="personData$ | async" [pageSize]="10">
+<kendo-grid
+  [data]="personData$ | async"
+  [pageSize]="gridState.take"
+  [skip]="gridState.skip"
+  [sort]="gridState.sort"
+  [pageable]="true"
+  [sortable]="true"
+  (dataStateChange)="onStateChange($event)"
+  (edit)="editHandler($event)"
+  (cancel)="cancelHandler($event)"
+  (save)="saveHandler($event)"
+  (remove)="removeHandler($event)"
+  (add)="addHandler($event)"
+  [navigable]="true"
+>
   <ng-template kendoGridToolbarTemplate>
     <button kendoGridAddCommand>Add new</button>
   </ng-template>
@@ -28,7 +42,7 @@
     [width]="200"
   ></kendo-grid-column>
   <kendo-grid-column
-    field="DateOfBirt"
+    field="DateOfBirth"
     title="Date Of Birth"
     [width]="200"
   ></kendo-grid-column>
@@ -36,6 +50,9 @@
     <ng-template kendoGridCellTemplate let-isNew="isNew">
       <button kendoGridEditCommand [primary]="true">Edit</button>
       <button kendoGridRemoveCommand>Remove</button>
+      <button kendoGridSaveCommand>
+        {{ isNew ? "Add" : "Update" }}
+      </button>
       <button kendoGridCancelCommand>
         {{ isNew ? "Discard changes" : "Cancel" }}
       </button>
