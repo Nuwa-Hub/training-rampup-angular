@@ -67,17 +67,26 @@ deletePersonData$ = createEffect(() =>
   );
 
 
-  // addPost$ = createEffect(() =>
-  //     this.actions$.pipe(
-  //       ofType(PostsActions.addPostStart),
-  //       mergeMap((newcard) => {
-  //         return this.postsService.addCards(newcard.post).pipe(
-  //           map((post) => PostsActions.addPostSuccess({ post })),
-  //           catchError((error) =>
-  //             of(PostsActions.getPostFailure({ error: error.message }))
-  //           )
-  //         );
-  //       })
-  //     )
-  //   );
+ updatePersonData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PersonActions.updatePersonstart),
+      switchMap((personData) => {
+        return this.apiService.updatePersondata(personData.personData).pipe(
+          switchMap(() => {
+            return this.apiService.fetchPersondata().pipe(
+              map((personData) =>
+                PersonActions.getPersonSuccess({ personData })
+              ),
+              catchError((error) =>
+                of(PersonActions.getPersonFailure({ error: error.message }))
+              )
+            );
+          }),
+          catchError((error) =>
+            of(PersonActions.addPersonFailure({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
 }

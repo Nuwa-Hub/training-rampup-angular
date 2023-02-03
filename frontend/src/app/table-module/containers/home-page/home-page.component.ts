@@ -6,7 +6,6 @@ import {
 import { Observable } from "rxjs";
 import { Component, OnInit, Inject } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-
 import {
   GridComponent,
   GridDataResult,
@@ -18,12 +17,10 @@ import {
 } from "@progress/kendo-angular-grid";
 import { State, process } from "@progress/kendo-data-query";
 import { first, map, toArray } from "rxjs/operators";
-import { sampleData } from "../../helpers/sampleProducts";
-import { Category, PersonInterface } from "src/app/models/person-interface";
+import {  PersonInterface } from "src/app/models/person-interface";
 import { AppStateInterface } from "src/app/types/appState.interface";
 import { select, Store } from "@ngrx/store";
 import * as personActions from "../../../store/actions/personAction";
-import { TableService } from "../../services/table.service";
 import { durationInYears } from "@progress/kendo-date-math";
 import { Socket } from "ngx-socket-io";
 import { NotificationService } from "@progress/kendo-angular-notification";
@@ -45,18 +42,15 @@ export class HomePageComponent {
   public data: PersonInterface[] = [];
   private editedRowIndex: number | undefined;
   public formGroup: FormGroup | undefined;
-  private editService: TableService;
   public maxDate: Date = new Date(2004, 12, 31);
 
   constructor(
     private store: Store<AppStateInterface>,
-    @Inject(TableService) editServiceFactory: () => TableService,
     private socket: Socket,
     private notificationService: NotificationService
   ) {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.error$ = this.store.pipe(select(errSelector));
-    this.editService = editServiceFactory();
 
     this.socket.on("connect", () => {
       console.log("connected");
@@ -148,16 +142,24 @@ export class HomePageComponent {
     isNew,
     dataItem,
   }: SaveEvent): void {
-    const person: PersonInterface = formGroup.value;
+    const personData: PersonInterface = formGroup.value;
     if (dataItem.PersonID) {
-      person.PersonID = dataItem.PersonID;
+      personData.PersonID = dataItem.PersonID;
     }
-    this.editService.save(person, isNew);
+    //this.editService.save(personData, isNew);
+    if (isNew) {
+      this.store.dispatch(personActions.addPersonstart({ personData }));
+    } else {
+      this.store.dispatch(personActions.updatePersonstart({ personData }));
+    }
     sender.closeRow(rowIndex);
   }
   public removeHandler(args: RemoveEvent): void {
     // remove the current dataItem from the current data source, and close the row
-    this.editService.remove(args.dataItem.PersonID);
+    //this.editService.remove(args.dataItem.PersonID);
+    this.store.dispatch(
+      personActions.deletePersonstart({ PersonID: args.dataItem.PersonID })
+    );
   }
 
   public cancelHandler(args: CancelEvent): void {

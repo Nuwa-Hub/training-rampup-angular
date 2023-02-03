@@ -32,4 +32,15 @@ export const deletePersonFailure = createAction(
   "[Post] Delete PersonData failure",
   props<{ error: string }>()
 );
+export const updatePersonstart = createAction(
+  "[Post] Update PersonData start",
+  props<{ personData: PersonInterface }>()
+);
+export const updatePersonSuccess = createAction(  
+  "[Post] Update PersonData success",
+);
+export const updatePersonFailure = createAction(
+  "[Post] Update PersonData failure",
+  props<{ error: string }>()
+);
 

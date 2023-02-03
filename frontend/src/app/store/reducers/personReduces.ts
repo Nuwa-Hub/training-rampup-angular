@@ -43,5 +43,18 @@ export const reducers = createReducer(
     ...state,
     isLoading: false,
     error: action.error,
+  })),
+  on(PersonActions.updatePersonstart, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(PersonActions.updatePersonSuccess, (state) => ({
+    ...state,
+    isLoading: false,
+  })),
+  on(PersonActions.updatePersonFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
   }))
 );
