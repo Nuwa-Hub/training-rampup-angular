@@ -26,17 +26,9 @@ import * as personActions from "../../../store/actions/personAction";
 import { TableService } from "../../services/table.service";
 import { durationInYears } from "@progress/kendo-date-math";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { Socket } from "ngx-socket-io";
 
-export const categories = [
-  {
-    CategoryID: "Male",
-    CategoryName: "Male",
-  },
-  {
-    CategoryID: "Femail",
-    CategoryName: "Female",
-  },
-];
+
 @Component({
   selector: "app-home-page",
   templateUrl: "./home-page.component.html",
@@ -55,16 +47,27 @@ export class HomePageComponent {
   private editedRowIndex: number | undefined;
   public formGroup: FormGroup | undefined;
   private editService: TableService;
-  public categories: Category[] = categories;
   public maxDate: Date = new Date(2004, 12, 31);
 
   constructor(
     private store: Store<AppStateInterface>,
-    @Inject(TableService) editServiceFactory: () => TableService
+    @Inject(TableService) editServiceFactory: () => TableService,
+    private socket: Socket,
+   
   ) {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.error$ = this.store.pipe(select(errSelector));
     this.editService = editServiceFactory();
+
+    this.socket.on("connect", () => {
+      console.log("connected");
+    });
+    this.socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
+    this.socket.on("notification", (data: any) => {
+      console.log(data);
+    });
   }
 
   ngOnInit(): void {
@@ -73,11 +76,6 @@ export class HomePageComponent {
       select(personDataSelector),
       map((data) => process(data, this.gridState))
     );
-  }
-
-  public category(id: string): Category | undefined {
-    // [formControl]="formGroup.get('CategoryID')"
-    return this.categories.find((x) => x.CategoryID === id);
   }
 
   public addHandler(args: AddEvent): void {

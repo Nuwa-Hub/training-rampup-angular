@@ -9,5 +9,5 @@ export const httpServer = createServer(app);
 
 //socket io
 export const io: Server = new Server(httpServer, {
-  cors: { origin: "http://localhost:3000" },
+  cors: { origin: "http://localhost:4200" },
 });

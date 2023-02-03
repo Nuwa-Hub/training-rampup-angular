@@ -3,15 +3,20 @@ import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { PersonInterface } from "../models/person-interface";
 
+
 @Injectable({
   providedIn: "root",
 })
 export class ApiService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+   
+  }
+
   private headers = new HttpHeaders().set(
     "Content-Type",
     "application/json; charset=utf-8"
   );
+
   fetchPersondata(): Observable<PersonInterface[]> {
     return this.http
       .get("http://localhost:5000/api/students", { headers: this.headers })
@@ -20,7 +25,7 @@ export class ApiService {
 
   addPersondata(personData: PersonInterface): Observable<PersonInterface> {
     return this.http
-      .post(
+      .put(
         "http://localhost:5000/api/students",
         { data: personData },
         {

@@ -7,7 +7,6 @@ import { reducers } from "../store/reducers/personReduces";
 import { EffectsModule } from "@ngrx/effects";
 import { PersonEffects } from "../store/effects/effects";
 import { TableService } from "./services/table.service";
-import { HttpClient } from "@angular/common/http";
 import { AppStateInterface } from "../types/appState.interface";
 import { DropDownListModule } from "@progress/kendo-angular-dropdowns";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
@@ -15,10 +14,15 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PopupModule } from "@progress/kendo-angular-popup";
 import { PopupAnchorDirective } from "../utils/derectives/popupAnchor.derective/popup-anchor.directive";
 import { InputsModule } from "@progress/kendo-angular-inputs";
+import { SocketIoModule, SocketIoConfig } from "ngx-socket-io";
+
+
+const config: SocketIoConfig = { url: "http://localhost:5000", options: {} };
 
 @NgModule({
   declarations: [HomePageComponent, PopupAnchorDirective],
   imports: [
+    SocketIoModule.forRoot(config),
     CommonModule,
     GridModule,
     StoreModule.forFeature("personData", reducers),
@@ -29,6 +33,7 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
     FormsModule,
     PopupModule,
     InputsModule,
+
   ],
 
   providers: [
