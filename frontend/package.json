@@ -33,6 +33,7 @@
     "@progress/kendo-angular-l10n": "11.0.0",
     "@progress/kendo-angular-label": "11.0.0",
     "@progress/kendo-angular-layout": "^11.0.0",
+    "@progress/kendo-angular-notification": "^11.1.0",
     "@progress/kendo-angular-popup": "11.0.0",
     "@progress/kendo-licensing": "^1.0.2",
     "@progress/kendo-svg-icons": "^1.0.0",

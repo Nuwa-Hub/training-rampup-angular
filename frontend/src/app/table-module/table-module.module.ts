@@ -15,7 +15,8 @@ import { PopupModule } from "@progress/kendo-angular-popup";
 import { PopupAnchorDirective } from "../utils/derectives/popupAnchor.derective/popup-anchor.directive";
 import { InputsModule } from "@progress/kendo-angular-inputs";
 import { SocketIoModule, SocketIoConfig } from "ngx-socket-io";
-
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NotificationModule } from "@progress/kendo-angular-notification";
 
 const config: SocketIoConfig = { url: "http://localhost:5000", options: {} };
 
@@ -33,7 +34,8 @@ const config: SocketIoConfig = { url: "http://localhost:5000", options: {} };
     FormsModule,
     PopupModule,
     InputsModule,
-
+    BrowserAnimationsModule,
+    NotificationModule,
   ],
 
   providers: [

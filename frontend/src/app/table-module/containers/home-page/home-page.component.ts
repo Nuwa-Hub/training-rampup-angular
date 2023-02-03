@@ -25,9 +25,8 @@ import { select, Store } from "@ngrx/store";
 import * as personActions from "../../../store/actions/personAction";
 import { TableService } from "../../services/table.service";
 import { durationInYears } from "@progress/kendo-date-math";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { Socket } from "ngx-socket-io";
-
+import { NotificationService } from "@progress/kendo-angular-notification";
 
 @Component({
   selector: "app-home-page",
@@ -53,7 +52,7 @@ export class HomePageComponent {
     private store: Store<AppStateInterface>,
     @Inject(TableService) editServiceFactory: () => TableService,
     private socket: Socket,
-   
+    private notificationService: NotificationService
   ) {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.error$ = this.store.pipe(select(errSelector));
@@ -66,7 +65,7 @@ export class HomePageComponent {
       console.log("disconnected");
     });
     this.socket.on("notification", (data: any) => {
-      console.log(data);
+      this.notification(data);
     });
   }
 
@@ -76,6 +75,17 @@ export class HomePageComponent {
       select(personDataSelector),
       map((data) => process(data, this.gridState))
     );
+  }
+
+  public notification(data: string): void {
+    this.notificationService.show({
+      content: `${data}`,
+      cssClass: "button-notification",
+      animation: { type: "slide", duration: 200 },
+      position: { horizontal: "right", vertical: "top" },
+      type: { style: "success", icon: true },
+      hideAfter: 2000,
+    });
   }
 
   public addHandler(args: AddEvent): void {
