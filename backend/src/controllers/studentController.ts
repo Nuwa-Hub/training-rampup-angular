@@ -36,11 +36,11 @@ export const createStudent = async (req: Request, res: Response) => {
     const user = req.body.data;
     console.log("createUsers", user);
     const userInsert = await createStudentService(user);
-    // const socket = req.app.get("socket");
-    // socket.emit(
-    //   "notification",
-    //   `New user created successfully Name: ${userInsert?.PersonName}  !`
-    // );
+    const socket = req.app.get("socket");
+    socket.emit(
+      "notification",
+      `New user created successfully Name: ${userInsert?.PersonName}  !`
+    );
     res.status(201).send(userInsert);
   } catch (err) {
     res.status(400).send(err);

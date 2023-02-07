@@ -17,11 +17,11 @@ import {
 } from "@progress/kendo-angular-grid";
 import { State, process } from "@progress/kendo-data-query";
 import { first, map, toArray } from "rxjs/operators";
-import {  PersonInterface } from "src/app/models/person-interface";
+import { PersonInterface } from "src/app/models/person-interface";
 import { AppStateInterface } from "src/app/types/appState.interface";
 import { select, Store } from "@ngrx/store";
 import * as personActions from "../../../store/actions/personAction";
-import { durationInYears } from "@progress/kendo-date-math";
+import { durationInYears,addYears } from "@progress/kendo-date-math";
 import { Socket } from "ngx-socket-io";
 import { NotificationService } from "@progress/kendo-angular-notification";
 
@@ -42,7 +42,7 @@ export class HomePageComponent {
   public data: PersonInterface[] = [];
   private editedRowIndex: number | undefined;
   public formGroup: FormGroup | undefined;
-  public maxDate: Date = new Date(2004, 12, 31);
+  public maxDate: Date = addYears(new Date(),-18);
 
   constructor(
     private store: Store<AppStateInterface>,
@@ -86,11 +86,26 @@ export class HomePageComponent {
     // define all editable fields validators and default values
     this.closeEditor(args.sender);
     this.formGroup = new FormGroup({
-      PersonName: new FormControl("", Validators.required),
-      PersonGender: new FormControl("", Validators.required),
-      PersonAddress: new FormControl("", Validators.required),
-      PersonMobileNo: new FormControl("", Validators.required),
-      DateOfBirth: new FormControl(new Date(), Validators.required),
+      PersonName: new FormControl(
+        '',
+        Validators.required
+      ),
+      PersonGender: new FormControl('', Validators.required),
+      PersonAddress: new FormControl(
+        '',
+        Validators.required
+      ),
+      PersonMobileNo: new FormControl(
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.pattern("^[0-9]{10}$"),
+        ])
+      ),
+      DateOfBirth: new FormControl(
+        this.maxDate,
+        Validators.compose([Validators.required, this.ageValidator])
+      ),
     });
     // show the new row editor, with the `FormGroup` build above
     args.sender.addRow(this.formGroup);
@@ -103,10 +118,7 @@ export class HomePageComponent {
     this.formGroup = new FormGroup({
       PersonName: new FormControl(
         dataItem.PersonName,
-        Validators.compose([
-          Validators.required,
-          Validators.pattern("^[a-z]{5,15}"),
-        ])
+        Validators.required
       ),
       PersonGender: new FormControl(dataItem.PersonGender, Validators.required),
       PersonAddress: new FormControl(
@@ -115,7 +127,10 @@ export class HomePageComponent {
       ),
       PersonMobileNo: new FormControl(
         dataItem.PersonMobileNo,
-        Validators.required
+        Validators.compose([
+          Validators.required,
+          Validators.pattern("^[0-9]{10}$"),
+        ])
       ),
       DateOfBirth: new FormControl(
         new Date(dataItem.DateOfBirth),
@@ -147,9 +162,9 @@ export class HomePageComponent {
       personData.PersonID = dataItem.PersonID;
     }
     //this.editService.save(personData, isNew);
-    if (isNew) {
+    if (isNew && formGroup.valid) {
       this.store.dispatch(personActions.addPersonstart({ personData }));
-    } else {
+    } else if (formGroup.valid) {
       this.store.dispatch(personActions.updatePersonstart({ personData }));
     }
     sender.closeRow(rowIndex);
@@ -186,4 +201,12 @@ export class HomePageComponent {
     }
     return null;
   };
+
+  protected checkValid() {
+    if (this.formGroup?.valid) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

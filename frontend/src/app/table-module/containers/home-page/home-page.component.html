@@ -163,7 +163,7 @@
     <ng-template kendoGridCellTemplate let-isNew="isNew">
       <button kendoGridEditCommand [primary]="true">Edit</button>
       <button kendoGridRemoveCommand>Remove</button>
-      <button kendoGridSaveCommand>
+      <button kendoGridSaveCommand [disabled]="!checkValid()">
         {{ isNew ? "Add" : "Update" }}
       </button>
       <button kendoGridCancelCommand>
