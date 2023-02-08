@@ -43,10 +43,10 @@ export class PersonEffects {
       })
     )
   );
-deletePersonData$ = createEffect(() =>
+  deletePersonData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonActions.deletePersonstart),
-      switchMap(({PersonID}) => {
+      switchMap(({ PersonID }) => {
         return this.apiService.removePersondata(PersonID).pipe(
           switchMap(() => {
             return this.apiService.fetchPersondata().pipe(
@@ -66,8 +66,7 @@ deletePersonData$ = createEffect(() =>
     )
   );
 
-
- updatePersonData$ = createEffect(() =>
+  updatePersonData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonActions.updatePersonstart),
       switchMap((personData) => {

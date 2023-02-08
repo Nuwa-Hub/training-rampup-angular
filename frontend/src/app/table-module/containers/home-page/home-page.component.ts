@@ -171,7 +171,6 @@ export class HomePageComponent {
   }
   public removeHandler(args: RemoveEvent): void {
     // remove the current dataItem from the current data source, and close the row
-    //this.editService.remove(args.dataItem.PersonID);
     this.store.dispatch(
       personActions.deletePersonstart({ PersonID: args.dataItem.PersonID })
     );

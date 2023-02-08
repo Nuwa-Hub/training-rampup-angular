@@ -14,13 +14,11 @@ export class ApiService {
     "Content-Type",
     "application/json; charset=utf-8"
   );
-
   fetchPersondata(): Observable<PersonInterface[]> {
     return this.http
       .get(`${environment.apiUrl}/students`, { headers: this.headers })
       .pipe(map((data: any) => data));
   }
-
   addPersondata(personData: PersonInterface): Observable<PersonInterface> {
     return this.http
       .post(

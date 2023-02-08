@@ -3,7 +3,6 @@ import { AppStateInterface } from "src/app/types/appState.interface";
 
 export const selectFeaturePersondata = (state: AppStateInterface) =>
   state.personData;
-
 export const isLoadingSelector = createSelector(
   selectFeaturePersondata,
   (persondataState) => persondataState.isLoading
